@@ -2,57 +2,10 @@
 #include <iostream>
 #include <immintrin.h>
 
-void initialization_and_sub()
+//avx example
+__m256 multiply_and_add(__m256 a, __m256 b, __m256 c)
 {
-    /* Initialize the two argument vectors */
-    __m256 evens    = _mm256_set_ps(2.0, 4.0, 6.0, 8.0, 10.0, 12.0, 14.0, 16.0);
-    __m256 odds     = _mm256_set_ps(1.0, 3.0, 5.0, 7.0, 9.0, 11.0, 13.0, 15.0);
-
-    /* Compute the difference between the two vectors */
-    __m256 result   = _mm256_sub_ps(evens, odds);
-
-    /* Display the elements of the result vector */
-    float* f        = (float*)&result;
-    printf("%f %f %f %f %f %f %f %f\n",
-           f[0], f[1], f[2], f[3], f[4], f[5], f[6], f[7]);
-}
-
-void multiply_and_add(__m256 a, __m256 b, __m256 c)
-{
-    __m256 result   =  _mm256_fmadd_ps(a, b, c);
-    float* res      = (float*)&result;
-    printf("%f %f %f %f %f %f %f %f\n",
-           res[0], res[1], res[2], res[3], res[4], res[5], res[6], res[7]);
-}
-
-void mask()
-{
-    int int_array[8] = {100, 200, 300, 400, 500, 600, 700, 800};
-
-    /* Initialize the mask vector */
-    __m256i mask     = _mm256_setr_epi32(-20, -72, -48, 9, -100, -3, 5, 8);
-    /* Selectively load data into the vector */
-    __m256i result2  = _mm256_maskload_epi32(int_array, mask);
-
-    /* Display the elements of the result vector */
-    int*    res      = (int*)&result2;
-    printf("%d %d %d %d %d %d %d %d\n",
-           res[0], res[1], res[2], res[3], res[4], res[5], res[6], res[7]);
-}
-
-void multiply_add_sub_fusion()
-{
-    __m256d veca    = _mm256_setr_pd(6.0, 6.0, 6.0, 6.0);
-    __m256d vecb    = _mm256_setr_pd(2.0, 2.0, 2.0, 2.0);
-    __m256d vecc    = _mm256_setr_pd(7.0, 7.0, 7.0, 7.0);
-
-    /* Alternately subtract and add the third vector
-       from the product of the first and second vectors */
-    __m256d result  = _mm256_fmaddsub_pd(veca, vecb, vecc);
-
-    /* Display the elements of the result vector */
-    double* res     = (double*)&result;
-    printf("%lf %lf %lf %lf\n", res[0], res[1], res[2], res[3]);
+    return _mm256_fmadd_ps(a, b, c);
 }
 
 /*
@@ -77,14 +30,39 @@ void multiply_add_sub_fusion()
 
 int main()
 {
-    __m256 evens    = _mm256_set_ps(2.0, 4.0, 6.0, 8.0, 10.0, 12.0, 14.0, 16.0);
-    __m256 odds     = _mm256_set_ps(1.0, 3.0, 5.0, 7.0, 9.0, 11.0, 13.0, 15.0);
-    __m256 vec      = _mm256_set_ps(1.0, 3.0, 5.0, 7.0, 9.0, 11.0, 13.0, 15.0);
+    /* Initialize the two argument vectors */
+    __m256 evens = _mm256_set_ps(2.0, 4.0, 6.0, 8.0, 10.0, 12.0, 14.0, 16.0);
+    __m256 odds = _mm256_set_ps(1.0, 3.0, 5.0, 7.0, 9.0, 11.0, 13.0, 15.0);
 
-    initialization_and_sub();
-    multiply_and_add(evens, odds, vec);
-    mask();
-    multiply_add_sub_fusion();
+    /* Compute the difference between the two vectors */
+    __m256 result = _mm256_sub_ps(evens, odds);
+    //called a function
+    __m256 c = multiply_and_add(evens, odds, result);
+
+    /* Display the elements of the result vector */
+    float* f = (float*)&result;
+    printf("%f %f %f %f %f %f %f %f\n",
+           f[0], f[1], f[2], f[3], f[4], f[5], f[6], f[7]);
+    float* d = (float*)&c;
+    printf("%f %f %f %f %f %f %f %f\n",
+           d[0], d[1], d[2], d[3], d[4], d[5], d[6], d[7]);
+
+
+
+    int int_array[8] = {100, 200, 300, 400, 500, 600, 700, 800};
+
+    /* Initialize the mask vector */
+    __m256i mask = _mm256_setr_epi32(-20, -72, -48, 9, -100, -3, 5, 8);
+
+    /* Selectively load data into the vector */
+    __m256i result2 = _mm256_maskload_epi32(int_array, mask);
+
+    /* Display the elements of the result vector */
+    int* res = (int*)&result2;
+    printf("%d %d %d %d %d %d %d %d\n",
+           res[0], res[1], res[2], res[3], res[4], res[5], res[6], res[7]);
+
+
 
     return 0;
 }
