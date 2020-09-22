@@ -37,10 +37,16 @@ int main()
     /* Compute the difference between the two vectors */
     __m256 result = _mm256_sub_ps(evens, odds);
 
+    __m256 c = multiply_and_add(evens, odds, result);
+
     /* Display the elements of the result vector */
     float* f = (float*)&result;
     printf("%f %f %f %f %f %f %f %f\n",
            f[0], f[1], f[2], f[3], f[4], f[5], f[6], f[7]);
+
+    float* d = (float*)&c;
+    printf("%f %f %f %f %f %f %f %f\n",
+           d[0], d[1], d[2], d[3], d[4], d[5], d[6], d[7]);
 
     return 0;
 }
