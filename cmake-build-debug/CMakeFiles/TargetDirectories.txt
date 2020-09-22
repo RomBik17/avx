@@ -1,0 +1,3 @@
+C:/Users/rrafa/Desktop/avx/cmake-build-debug/CMakeFiles/avx.dir
+C:/Users/rrafa/Desktop/avx/cmake-build-debug/CMakeFiles/edit_cache.dir
+C:/Users/rrafa/Desktop/avx/cmake-build-debug/CMakeFiles/rebuild_cache.dir
